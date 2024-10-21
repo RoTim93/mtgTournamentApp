@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Welcome to the Arena{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <h1>MTG Arena</h1>
+    <img src="{% static 'homepageimages/mtg_arena_logo.jpg' %}" alt="MTG Arena Logo" class="img-fluid mb-4" style="max-width: 300px;">
+    <p class="lead">Welcome to the Arena!</p>
+    <p>This is a web application to organize Magic: The Gathering tournaments. It can calculate pairings and standings for Swiss-style tournaments, and is used to run drafts for the group. Click on the Help tab for more information.</p>
+</div>
+{% endblock %}

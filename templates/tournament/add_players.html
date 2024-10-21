@@ -1,0 +1,42 @@
+{#{% extends 'base.html' %}#}
+{##}
+{#{% block title %}Add Players{% endblock %}#}
+{##}
+{#{% block content %}#}
+{#<h1>Add Players to {{ tournament.name }}</h1>#}
+{#<form method="post">#}
+{#    {% csrf_token %}#}
+{#    {{ form.as_p }}#}
+{#    <button type="submit" class="btn btn-primary">Add Player</button>#}
+{#</form>#}
+{##}
+{#<form method="post" style="margin-top: 20px;">#}
+{#    {% csrf_token %}#}
+{#    <button type="submit" name="start_tournament" class="btn btn-success">Start Tournament</button>#}
+{#</form>#}
+{##}
+{#{% if tournament.bracket %}#}
+{#    <h2>Pairings</h2>#}
+{#    {% for round in tournament.bracket %}#}
+{#        <h3>Round {{ forloop.counter }}</h3>#}
+{#        <ul>#}
+{#        {% for match in round %}#}
+{#            <li>{{ match.0 }} vs {{ match.1 }}</li>#}
+{#        {% endfor %}#}
+{#        </ul>#}
+{#    {% endfor %}#}
+{#{% endif %}#}
+{#{% endblock %}#}
+
+{% extends 'base.html' %}
+
+{% block title %}Add Players{% endblock %}
+
+{% block content %}
+<h1>Add Players to {{ tournament.name }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Add Player</button>
+</form>
+{% endblock %}

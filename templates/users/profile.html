@@ -1,0 +1,34 @@
+{#{% extends 'base.html' %}#}
+{##}
+{#{% block title %}Profile{% endblock %}#}
+{##}
+{#{% block content %}#}
+{#<div class="row">#}
+{#    <div class="col-md-6 offset-md-3">#}
+{#        <h2>Your Profile</h2>#}
+{#        <p><strong>First name:</strong> {{ user.first_name }}</p>#}
+{#        <p><strong>Last name:</strong> {{ user.last_name }}</p>#}
+{#        <p><strong>Email:</strong> {{ user.email }}</p>#}
+{#    </div>#}
+{#</div>#}
+{#{% endblock %}#}
+
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2>Your Profile</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Update Username</button>
+        </form>
+        <p><strong>First name:</strong> {{ first_name }}</p>
+        <p><strong>Last name:</strong> {{ last_name }}</p>
+        <p><strong>Email:</strong> {{ email }}</p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Tournament Players{% endblock %}
+
+{% block content %}
+<h1>{{ tournament.name }} - Players</h1>
+<h2>Leaderboard</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Position</th>
+            <th>Name</th>
+            <th>Points</th>
+            <th>W-L-D</th>
+            <th>OMP</th>
+            <th>GWP</th>
+            <th>OGP</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for player in players %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ player.name }}</td>
+            <td>{{ player.match_points }}</td>
+            <td>{{ player.wins }}-{{ player.losses }}-{{ player.draws }}</td>
+            <td>0.00%</td>
+            <td>0.00%</td>
+            <td>0.00%</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% for round_number, pairs in pairings_by_round.items %}
+<div class="round-box">
+    <h2>Round {{ round_number }}</h2>
+    <form method="post" action="{% url 'update_results' tournament.id %}">
+        {% csrf_token %}
+        <ul class="no-bullets">
+            {% for pair in pairs %}
+            <li>
+                {{ forloop.counter }}.
+                {% if pair.player2 %}
+                <input type="hidden" name="player1_id_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player1.id }}">
+                <input type="hidden" name="player2_id_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player2.id }}">
+                <input type="text" name="player1_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player1.name }}" readonly>
+                <input type="number" name="score1_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player1_score }}" min="0" max="2" {% if pair.results_submitted %}readonly{% endif %}>
+                vs
+                <input type="text" name="player2_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player2.name }}" readonly>
+                <input type="number" name="score2_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player2_score }}" min="0" max="2" {% if pair.results_submitted %}readonly{% endif %}>
+                {% else %}
+                <input type="hidden" name="player1_id_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player1.id }}">
+                <input type="text" name="player1_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player1.name }}" readonly>
+                has Bye (wins 2-0)
+                <input type="hidden" name="score1_{{ round_number }}_{{ forloop.counter }}" value="2">
+                <input type="hidden" name="score2_{{ round_number }}_{{ forloop.counter }}" value="0">
+                {% endif %}
+                {% if pair.results_submitted %}
+                <button type="button" class="btn btn-secondary" onclick="enableEditing({{ round_number }}, {{ forloop.counter }})">Edit</button>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        <button type="submit" class="btn btn-primary">Submit Results</button>
+    </form>
+</div>
+{% endfor %}
+
+<script>
+function enableEditing(round, counter) {
+    document.querySelector(`input[name="score1_${round}_${counter}"]`).removeAttribute('readonly');
+    document.querySelector(`input[name="score2_${round}_${counter}"]`).removeAttribute('readonly');
+}
+</script>
+{% endblock %}

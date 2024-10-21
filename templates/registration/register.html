@@ -1,0 +1,182 @@
+{#{% extends 'base.html' %}#}
+{##}
+{#{% block content %}#}
+{#<div class="container mt-5">#}
+{#    <h2 class="text-center">Create an Account</h2>#}
+{#    #}
+{#    <form method="post" class="mt-4">#}
+{#        {% csrf_token %}#}
+{#        #}
+{#        <div class="form-group">#}
+{#            <label for="username">Username</label>#}
+{#            {{ form.username }}#}
+{#            {% if form.username.errors %}#}
+{#                <div class="alert alert-danger">#}
+{#                    {% for error in form.username.errors %}#}
+{#                        <strong>{{ error }}</strong>#}
+{#                    {% endfor %}#}
+{#                </div>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#        #}
+{#        <div class="form-group">#}
+{#            <label for="first_name">First Name</label>#}
+{#            {{ form.first_name }}#}
+{#            {% if form.first_name.errors %}#}
+{#                <div class="alert alert-danger">#}
+{#                    {% for error in form.first_name.errors %}#}
+{#                        <strong>{{ error }}</strong>#}
+{#                    {% endfor %}#}
+{#                </div>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#        #}
+{#        <div class="form-group">#}
+{#            <label for="last_name">Last Name</label>#}
+{#            {{ form.last_name }}#}
+{#            {% if form.last_name.errors %}#}
+{#                <div class="alert alert-danger">#}
+{#                    {% for error in form.last_name.errors %}#}
+{#                        <strong>{{ error }}</strong>#}
+{#                    {% endfor %}#}
+{#                </div>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#        #}
+{#        <div class="form-group">#}
+{#            <label for="email">Email</label>#}
+{#            {{ form.email }}#}
+{#            {% if form.email.errors %}#}
+{#                <div class="alert alert-danger">#}
+{#                    {% for error in form.email.errors %}#}
+{#                        <strong>{{ error }}</strong>#}
+{#                    {% endfor %}#}
+{#                </div>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#        #}
+{#        <div class="form-group">#}
+{#            <label for="password1">Password</label>#}
+{#            {{ form.password1 }}#}
+{#            {% if form.password1.errors %}#}
+{#                <div class="alert alert-danger">#}
+{#                    {% for error in form.password1.errors %}#}
+{#                        <strong>{{ error }}</strong>#}
+{#                    {% endfor %}#}
+{#                </div>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#        #}
+{#        <div class="form-group">#}
+{#            <label for="password2">Confirm Password</label>#}
+{#            {{ form.password2 }}#}
+{#            {% if form.password2.errors %}#}
+{#                <div class="alert alert-danger">#}
+{#                    {% for error in form.password2.errors %}#}
+{#                        <strong>{{ error }}</strong>#}
+{#                    {% endfor %}#}
+{#                </div>#}
+{#            {% endif %}#}
+{#        </div>#}
+{#        #}
+{#        <div class="form-group">#}
+{#            <button type="submit" class="btn btn-primary btn-block">Create Account</button>#}
+{#        </div>#}
+{#    </form>#}
+{#</div>#}
+{#{% endblock %}#}
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Create an Account</h2>
+
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="username">Username</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.username.errors %}
+                        <strong>{{ error }}</strong>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="first_name">First Name</label>
+            {{ form.first_name }}
+            {% if form.first_name.errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.first_name.errors %}
+                        <strong>{{ error }}</strong>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="last_name">Last Name</label>
+            {{ form.last_name }}
+            {% if form.last_name.errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.last_name.errors %}
+                        <strong>{{ error }}</strong>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.email.errors %}
+                        <strong>{{ error }}</strong>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="password1">Password</label>
+            {{ form.password1 }}
+            {% if form.password1.errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.password1.errors %}
+                        <strong>{{ error }}</strong>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="password2">Confirm Password</label>
+            {{ form.password2 }}
+            {% if form.password2.errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.password2.errors %}
+                        <strong>{{ error }}</strong>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+        </div>
+    </form>
+
+    <div class="text-center mt-3">
+        <p>Or sign up with:</p>
+        <a href="#" class="btn btn-danger btn-block">
+            <i class="fab fa-google"></i> Sign up with Google
+        </a>
+    </div>
+</div>
+{% endblock %}

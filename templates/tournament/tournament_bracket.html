@@ -1,0 +1,45 @@
+{#{% extends 'base.html' %}#}
+{##}
+{#{% block title %}Tournament Bracket{% endblock %}#}
+{##}
+{#{% block content %}#}
+{#<h1>{{ tournament.name }} Bracket</h1>#}
+{##}
+{#<pre>{{ bracket|safe }}</pre>  <!-- Debugging line -->#}
+{##}
+{#{% if bracket %}#}
+{#    <h2>Round 1</h2>#}
+{#    <ul>#}
+{#    {% for match in bracket.0 %}#}
+{#        <li>{{ match.0 }} vs {{ match.1 }}</li>#}
+{#    {% endfor %}#}
+{#    </ul>#}
+{#{% else %}#}
+{#    <p>No pairings available.</p>#}
+{#{% endif %}#}
+{##}
+{#<a href="{% url 'tournament_list' %}" class="btn btn-primary">Back to Tournament List</a>#}
+{#{% endblock %}#}
+
+{% extends 'base.html' %}
+
+{% block title %}Tournament Bracket{% endblock %}
+
+{% block content %}
+<h1>{{ tournament.name }} Bracket</h1>
+
+{% if tournament.bracket %}
+    {% for round in tournament.bracket %}
+        <h2>Round {{ forloop.counter }}</h2>
+        <ul>
+        {% for match in round %}
+            <li>{{ match.0 }} vs {{ match.1 }}</li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+{% else %}
+    <p>No pairings available.</p>
+{% endif %}
+
+<a href="{% url 'tournament_list' %}" class="btn btn-primary">Back to Tournament List</a>
+{% endblock %}

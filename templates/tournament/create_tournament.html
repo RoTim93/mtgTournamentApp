@@ -1,0 +1,303 @@
+{#{% extends 'base.html' %}#}
+{##}
+{#{% block title %}Create Tournament{% endblock %}#}
+{##}
+{#{% block content %}#}
+{#<h1>Create Tournament</h1>#}
+{#<form id="tournament-form" method="post">#}
+{#    {% csrf_token %}#}
+{#    {{ form.as_p }}#}
+{#    <h2>Players</h2>#}
+{#    <div id="players-container">#}
+{#        <div class="player-field">#}
+{#            <span class="player-number">1.</span>#}
+{#            <input type="text" name="players" placeholder="Enter player name">#}
+{#            <button type="button" class="delete-player">X</button>#}
+{#        </div>#}
+{#    </div>#}
+{#    <button type="button" id="randomize-seating" class="btn btn-secondary">Randomize Seating</button>#}
+{#    <button type="submit" class="btn btn-success">Start Tournament</button>#}
+{#</form>#}
+{##}
+{#<script>#}
+{#document.addEventListener('DOMContentLoaded', function() {#}
+{#    var playersContainer = document.getElementById('players-container');#}
+{#    var tournamentForm = document.getElementById('tournament-form');#}
+{#    var randomizeButton = document.getElementById('randomize-seating');#}
+{##}
+{#    playersContainer.addEventListener('input', function(event) {#}
+{#        if (event.target.tagName === 'INPUT' && event.target.value !== '') {#}
+{#            addPlayerField();#}
+{#        }#}
+{#    });#}
+{##}
+{#    playersContainer.addEventListener('click', function(event) {#}
+{#        if (event.target.classList.contains('delete-player')) {#}
+{#            deletePlayerField(event.target);#}
+{#        }#}
+{#    });#}
+{##}
+{#    tournamentForm.addEventListener('submit', function(event) {#}
+{#        var playerFields = playersContainer.querySelectorAll('.player-field input');#}
+{#        var emptyFields = Array.from(playerFields).filter(input => input.value === '');#}
+{#        emptyFields.forEach(field => field.parentElement.remove());#}
+{#    });#}
+{##}
+{#    randomizeButton.addEventListener('click', function() {#}
+{#        randomizeSeating();#}
+{#    });#}
+{##}
+{#    function addPlayerField() {#}
+{#        var playerFields = playersContainer.querySelectorAll('.player-field');#}
+{#        var lastField = playerFields[playerFields.length - 1];#}
+{#        if (lastField.querySelector('input').value !== '') {#}
+{#            var newField = lastField.cloneNode(true);#}
+{#            newField.querySelector('input').value = '';#}
+{#            playersContainer.appendChild(newField);#}
+{#            updatePlayerNumbers();#}
+{#        }#}
+{#    }#}
+{##}
+{#    function deletePlayerField(button) {#}
+{#        var playerField = button.parentElement;#}
+{#        if (playersContainer.querySelectorAll('.player-field').length > 1) {#}
+{#            playerField.remove();#}
+{#            updatePlayerNumbers();#}
+{#        }#}
+{#    }#}
+{##}
+{#    function randomizeSeating() {#}
+{#        var playerFields = Array.from(playersContainer.querySelectorAll('.player-field'));#}
+{#        var playerNames = playerFields.map(field => field.querySelector('input').value).filter(name => name !== '');#}
+{#        playerNames = shuffleArray(playerNames);#}
+{##}
+{#        playersContainer.innerHTML = '';#}
+{#        playerNames.forEach((name, index) => {#}
+{#            var newField = document.createElement('div');#}
+{#            newField.classList.add('player-field');#}
+{#            newField.innerHTML = `#}
+{#                <span class="player-number">${index + 1}.</span>#}
+{#                <input type="text" name="players" value="${name}" placeholder="Enter player name">#}
+{#                <button type="button" class="delete-player">X</button>#}
+{#            `;#}
+{#            playersContainer.appendChild(newField);#}
+{#        });#}
+{#        addPlayerField();#}
+{#    }#}
+{##}
+{#    function shuffleArray(array) {#}
+{#        for (let i = array.length - 1; i > 0; i--) {#}
+{#            const j = Math.floor(Math.random() * (i + 1));#}
+{#            [array[i], array[j]] = [array[j], array[i]];#}
+{#        }#}
+{#        return array;#}
+{#    }#}
+{##}
+{#    function updatePlayerNumbers() {#}
+{#        var playerFields = playersContainer.querySelectorAll('.player-field');#}
+{#        playerFields.forEach((field, index) => {#}
+{#            field.querySelector('.player-number').textContent = (index + 1) + '.';#}
+{#        });#}
+{#    }#}
+{#});#}
+{#</script>#}
+{#{% endblock %}#}
+
+{#{% extends 'base.html' %}#}
+{##}
+{#{% block title %}Create Tournament{% endblock %}#}
+{##}
+{#{% block content %}#}
+{#<h1>Create Tournament</h1>#}
+{#<form id="tournament-form" method="post">#}
+{#    {% csrf_token %}#}
+{#    {{ form.as_p }}#}
+{#    <h2>Players</h2>#}
+{#    <div id="players-container">#}
+{#        <div class="player-field">#}
+{#            <input type="text" name="players" placeholder="Enter player name">#}
+{#            <button type="button" class="delete-player">X</button>#}
+{#        </div>#}
+{#    </div>#}
+{#    <button type="button" id="randomize-seating" class="btn btn-secondary">Randomize Seating</button>#}
+{#    <button type="submit" class="btn btn-primary">Save</button>#}
+{#</form>#}
+{##}
+{#<script>#}
+{#document.addEventListener('DOMContentLoaded', function() {#}
+{#    var playersContainer = document.getElementById('players-container');#}
+{#    var tournamentForm = document.getElementById('tournament-form');#}
+{#    var randomizeButton = document.getElementById('randomize-seating');#}
+{##}
+{#    playersContainer.addEventListener('input', function(event) {#}
+{#        if (event.target.tagName === 'INPUT' && event.target.value !== '') {#}
+{#            addPlayerField();#}
+{#        }#}
+{#    });#}
+{##}
+{#    playersContainer.addEventListener('click', function(event) {#}
+{#        if (event.target.classList.contains('delete-player')) {#}
+{#            deletePlayerField(event.target);#}
+{#        }#}
+{#    });#}
+{##}
+{#    tournamentForm.addEventListener('submit', function(event) {#}
+{#        var playerFields = playersContainer.querySelectorAll('.player-field input');#}
+{#        var emptyFields = Array.from(playerFields).filter(input => input.value === '');#}
+{#        emptyFields.forEach(field => field.parentElement.remove());#}
+{#    });#}
+{##}
+{#    randomizeButton.addEventListener('click', function() {#}
+{#        randomizeSeating();#}
+{#    });#}
+{##}
+{#    function addPlayerField() {#}
+{#        var playerFields = playersContainer.querySelectorAll('.player-field');#}
+{#        var lastField = playerFields[playerFields.length - 1];#}
+{#        if (lastField.querySelector('input').value !== '') {#}
+{#            var newField = lastField.cloneNode(true);#}
+{#            newField.querySelector('input').value = '';#}
+{#            playersContainer.appendChild(newField);#}
+{#        }#}
+{#    }#}
+{##}
+{#    function deletePlayerField(button) {#}
+{#        var playerField = button.parentElement;#}
+{#        if (playersContainer.querySelectorAll('.player-field').length > 1) {#}
+{#            playerField.remove();#}
+{#        }#}
+{#    }#}
+{##}
+{#    function randomizeSeating() {#}
+{#        var playerFields = Array.from(playersContainer.querySelectorAll('.player-field'));#}
+{#        var playerNames = playerFields.map(field => field.querySelector('input').value).filter(name => name !== '');#}
+{#        playerNames = shuffleArray(playerNames);#}
+{##}
+{#        playersContainer.innerHTML = '';#}
+{#        playerNames.forEach(name => {#}
+{#            var newField = document.createElement('div');#}
+{#            newField.classList.add('player-field');#}
+{#            newField.innerHTML = `#}
+{#                <input type="text" name="players" value="${name}" placeholder="Enter player name">#}
+{#                <button type="button" class="delete-player">X</button>#}
+{#            `;#}
+{#            playersContainer.appendChild(newField);#}
+{#        });#}
+{#        addPlayerField();#}
+{#    }#}
+{##}
+{#    function shuffleArray(array) {#}
+{#        for (let i = array.length - 1; i > 0; i--) {#}
+{#            const j = Math.floor(Math.random() * (i + 1));#}
+{#            [array[i], array[j]] = [array[j], array[i]];#}
+{#        }#}
+{#        return array;#}
+{#    }#}
+{#});#}
+{#</script>#}
+{#{% endblock %}#}
+
+{% extends 'base.html' %}
+
+{% block title %}Create Tournament{% endblock %}
+
+{% block content %}
+<h1>Create Tournament</h1>
+<form id="tournament-form" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <h2>Players</h2>
+    <div id="players-container">
+        <div class="player-field">
+            <span class="player-number">1.</span>
+            <input type="text" name="players" placeholder="Enter player name">
+            <button type="button" class="delete-player">X</button>
+        </div>
+    </div>
+    <button type="button" id="randomize-seating" class="btn btn-secondary">Randomize Seating</button>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var playersContainer = document.getElementById('players-container');
+    var tournamentForm = document.getElementById('tournament-form');
+    var randomizeButton = document.getElementById('randomize-seating');
+
+    playersContainer.addEventListener('input', function(event) {
+        if (event.target.tagName === 'INPUT' && event.target.value !== '') {
+            addPlayerField();
+        }
+    });
+
+    playersContainer.addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-player')) {
+            deletePlayerField(event.target);
+        }
+    });
+
+    tournamentForm.addEventListener('submit', function(event) {
+        var playerFields = playersContainer.querySelectorAll('.player-field input');
+        var emptyFields = Array.from(playerFields).filter(input => input.value === '');
+        emptyFields.forEach(field => field.parentElement.remove());
+    });
+
+    randomizeButton.addEventListener('click', function() {
+        randomizeSeating();
+    });
+
+    function addPlayerField() {
+        var playerFields = playersContainer.querySelectorAll('.player-field');
+        var lastField = playerFields[playerFields.length - 1];
+        if (lastField.querySelector('input').value !== '') {
+            var newField = lastField.cloneNode(true);
+            newField.querySelector('input').value = '';
+            playersContainer.appendChild(newField);
+            updatePlayerNumbers();
+        }
+    }
+
+    function deletePlayerField(button) {
+        var playerField = button.parentElement;
+        if (playersContainer.querySelectorAll('.player-field').length > 1) {
+            playerField.remove();
+            updatePlayerNumbers();
+        }
+    }
+
+    function randomizeSeating() {
+        var playerFields = Array.from(playersContainer.querySelectorAll('.player-field'));
+        var playerNames = playerFields.map(field => field.querySelector('input').value).filter(name => name !== '');
+        playerNames = shuffleArray(playerNames);
+
+        playersContainer.innerHTML = '';
+        playerNames.forEach((name, index) => {
+            var newField = document.createElement('div');
+            newField.classList.add('player-field');
+            newField.innerHTML = `
+                <span class="player-number">${index + 1}.</span>
+                <input type="text" name="players" value="${name}" placeholder="Enter player name">
+                <button type="button" class="delete-player">X</button>
+            `;
+            playersContainer.appendChild(newField);
+        });
+        addPlayerField();
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function updatePlayerNumbers() {
+        var playerFields = playersContainer.querySelectorAll('.player-field');
+        playerFields.forEach((field, index) => {
+            field.querySelector('.player-number').textContent = (index + 1) + '.';
+        });
+    }
+});
+</script>
+{% endblock %}
