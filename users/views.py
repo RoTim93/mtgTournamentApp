@@ -16,6 +16,7 @@ from .forms import EmailAuthenticationForm
 from django.contrib.auth.views import LoginView
 from .forms import UpdateUsernameForm
 from django.contrib.auth import get_user_model
+from django.contrib.auth import logout as auth_logout
 
 
 User = get_user_model()
@@ -165,3 +166,7 @@ def resend_activation_email(request):
 
 class CustomLoginView(LoginView):
     authentication_form = EmailAuthenticationForm
+
+def logout_view(request):
+    auth_logout(request)
+    return redirect('homepage')
