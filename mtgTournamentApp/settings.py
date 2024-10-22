@@ -104,8 +104,25 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Email backend configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Use SMTP backend for production
+EMAIL_HOST = 'smtp.gmail.com'  # Replace with your email provider's SMTP server
+EMAIL_PORT = 587  # Typically 587 for TLS, 465 for SSL
+EMAIL_USE_TLS = True  # Use TLS
+EMAIL_HOST_USER = 'scroogr@gmail.com'  # Your email address
+EMAIL_HOST_PASSWORD = 'vyyk kndw aqpx glcv'  # Your email password
+
+# URL configuration
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# SITE_ID = 1

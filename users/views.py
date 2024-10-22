@@ -1,22 +1,22 @@
 from django.contrib.auth.forms import AuthenticationForm
-from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth.tokens import default_token_generator
-from django.http import HttpResponse
-from django.contrib import messages
+from django.conf import settings
 from .forms import RegisterForm, ResendActivationForm
 from .forms import EmailAuthenticationForm
 from django.contrib.auth.views import LoginView
 from .forms import UpdateUsernameForm
 from django.contrib.auth import get_user_model
-from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import logout
+from django.shortcuts import render, redirect, HttpResponse
+from django.contrib.auth.models import User
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_bytes, force_str
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib import messages
 
 
 User = get_user_model()
@@ -33,7 +33,7 @@ def register(request):
             mail_subject = 'Activate your account.'
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            verification_link = f"http://{current_site.domain}/activate/{uid}/{token}/"
+            verification_link = f"http://{current_site.domain}/accounts/activate/{uid}/{token}/"
             message = render_to_string('registration/verification_email.html', {
                 'user': user,
                 'verification_link': verification_link
@@ -127,6 +127,27 @@ def login_view(request):
     return render(request, 'registration/login.html', {'form': form})
 
 
+def send_activation_email(user, request):
+    current_site = get_current_site(request)
+    mail_subject = 'Activate your account.'
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = default_token_generator.make_token(user)
+    verification_link = f"http://{current_site.domain}/accounts/activate/{uid}/{token}/"
+    message = render_to_string('registration/account_activation_mail.html', {
+        'user': user,
+        'domain': current_site.domain,
+        'uid': uid,
+        'token': token,
+        'verification_link': verification_link,  # Include the verification link
+    })
+
+    # Log the uid and token values
+    print(f"UID: {uid}")
+    print(f"Token: {token}")
+
+    send_mail(mail_subject, message, settings.EMAIL_HOST_USER, [user.email])
+
+
 
 def resend_activation_email(request):
     if request.method == 'POST':
@@ -140,7 +161,7 @@ def resend_activation_email(request):
                 mail_subject = 'Resend Activation - Activate your account.'
                 token = default_token_generator.make_token(user)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
-                verification_link = f"http://{current_site.domain}/activate/{uid}/{token}/"
+                verification_link = f"http://{current_site.domain}/accounts/activate/{uid}/{token}/"
                 message = render_to_string('registration/verification_email.html', {
                     'user': user,
                     'verification_link': verification_link
@@ -167,6 +188,6 @@ def resend_activation_email(request):
 class CustomLoginView(LoginView):
     authentication_form = EmailAuthenticationForm
 
-def logout_view(request):
-    auth_logout(request)
+def auth_logout(request):
+    logout(request)
     return redirect('homepage')
