@@ -12,9 +12,9 @@
             <th>Name</th>
             <th>Points</th>
             <th>W-L-D</th>
-            <th>OMP</th>
-            <th>GWP</th>
-            <th>OGP</th>
+            <th>OMP</th> <!-- Opponent's Match-Win Percentage -->
+            <th>GWP</th> <!-- Game-Win Percentage -->
+            <th>OGP</th> <!-- Opponent's Game-Win Percentage -->
         </tr>
     </thead>
     <tbody>
@@ -24,9 +24,9 @@
             <td>{{ player.name }}</td>
             <td>{{ player.match_points }}</td>
             <td>{{ player.wins }}-{{ player.losses }}-{{ player.draws }}</td>
-            <td>0.00%</td>
-            <td>0.00%</td>
-            <td>0.00%</td>
+            <td>{{ player.opponents_match_win_percentage|default_if_none:"0.00" }}%</td> <!-- Display OMP -->
+            <td>{{ player.game_win_percentage|default_if_none:"0.00" }}%</td> <!-- Display GWP -->
+            <td>{{ player.opponents_game_win_percentage|default_if_none:"0.00" }}%</td> <!-- Display OGP -->
         </tr>
         {% endfor %}
     </tbody>
@@ -45,10 +45,10 @@
                 <input type="hidden" name="player1_id_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player1.id }}">
                 <input type="hidden" name="player2_id_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player2.id }}">
                 <input type="text" name="player1_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player1.name }}" readonly>
-                <input type="number" name="score1_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player1_score }}" min="0" max="2" {% if pair.results_submitted %}readonly{% endif %}>
+                <input type="number" name="score1_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player1_score|default_if_none:0 }}" min="0" max="2" {% if pair.results_submitted %}readonly{% endif %}>
                 vs
                 <input type="text" name="player2_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player2.name }}" readonly>
-                <input type="number" name="score2_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player2_score }}" min="0" max="2" {% if pair.results_submitted %}readonly{% endif %}>
+                <input type="number" name="score2_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player2_score|default_if_none:0 }}" min="0" max="2" {% if pair.results_submitted %}readonly{% endif %}>
                 {% else %}
                 <input type="hidden" name="player1_id_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player1.id }}">
                 <input type="text" name="player1_{{ round_number }}_{{ forloop.counter }}" value="{{ pair.player1.name }}" readonly>

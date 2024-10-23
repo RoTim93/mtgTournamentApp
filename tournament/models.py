@@ -21,6 +21,7 @@ class Tournament(models.Model):
     number_of_rounds = models.IntegerField(default=0)
     is_ended = models.BooleanField(default=False)
 
+
 class Player(models.Model):
     name = models.CharField(max_length=100)
     tournament = models.ForeignKey(Tournament, related_name='players', on_delete=models.CASCADE)
@@ -28,7 +29,33 @@ class Player(models.Model):
     wins = models.IntegerField(default=0)
     losses = models.IntegerField(default=0)
     draws = models.IntegerField(default=0)
+    games_won = models.IntegerField(default=0)
+    games_lost = models.IntegerField(default=0)
+    games_drawn = models.IntegerField(default=0)
     had_bye = models.BooleanField(default=False)
+    game_win_percentage = models.FloatField(default=0.0)
+
+    def calculate_gwp(self):
+        total_games_played = self.games_won + self.games_lost + self.games_drawn
+
+        if total_games_played == 0:
+            self.game_win_percentage = 0.0
+        else:
+            # Calculate win percentage
+            gwp = (self.games_won / total_games_played) * 100
+            # Ensure GWP is at least 33.33% if it's lower
+            if gwp < 33.33:
+                self.game_win_percentage = 33.33
+            else:
+                self.game_win_percentage = round(gwp, 2)
+
+        self.save()
+
+    def __str__(self):
+        return self.name
+
+
+
 
 class Pairing(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
