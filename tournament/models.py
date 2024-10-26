@@ -34,27 +34,43 @@ class Player(models.Model):
     games_drawn = models.IntegerField(default=0)
     had_bye = models.BooleanField(default=False)
     game_win_percentage = models.FloatField(default=0.0)
+    opponents_match_win_percentage = models.FloatField(default=0.0)  # Field to store OMP
 
     def calculate_gwp(self):
         total_games_played = self.games_won + self.games_lost + self.games_drawn
+        total_possible_points = total_games_played * 3
 
         if total_games_played == 0:
             self.game_win_percentage = 0.0
         else:
-            # Calculate win percentage
-            gwp = (self.games_won / total_games_played) * 100
-            # Ensure GWP is at least 33.33% if it's lower
-            if gwp < 33.33:
-                self.game_win_percentage = 33.33
-            else:
-                self.game_win_percentage = round(gwp, 2)
+            total_game_points_earned = (self.games_won * 3) + (self.games_drawn * 1)
+            gwp = (total_game_points_earned / total_possible_points) * 100
+            self.game_win_percentage = max(gwp, 33.33)
+
+        self.save()
+
+    def calculate_omp(self):
+        # Get all pairings involving this player, excluding byes
+        pairings = Pairing.objects.filter(models.Q(player1=self) | models.Q(player2=self)).exclude(was_bye=True)
+
+        # Calculate each opponent’s match-win percentage
+        opponent_mw_percentages = []
+        for pairing in pairings:
+            opponent = pairing.player2 if pairing.player1 == self else pairing.player1
+            if opponent and (opponent.wins + opponent.losses + opponent.draws > 0):  # Only include valid opponents
+                opponent_mwp = opponent.match_points / ((opponent.wins + opponent.losses + opponent.draws) * 3)
+                opponent_mw_percentages.append(opponent_mwp)
+
+        # Calculate OMP as the average of the opponents' match-win percentages
+        if opponent_mw_percentages:
+            self.opponents_match_win_percentage = (sum(opponent_mw_percentages) / len(opponent_mw_percentages)) * 100
+        else:
+            self.opponents_match_win_percentage = 0.0
 
         self.save()
 
     def __str__(self):
         return self.name
-
-
 
 
 class Pairing(models.Model):

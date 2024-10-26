@@ -149,7 +149,6 @@ def update_results(request, tournament_id):
                     player1 = Player.objects.get(id=player1_id)
                     player2 = Player.objects.get(id=player2_id) if player2_id and player2_id != 'Bye' else None
 
-                    # Ensure scores are integers or None
                     new_score1 = int(score1) if score1 else None
                     new_score2 = int(score2) if score2 else None
 
@@ -177,10 +176,10 @@ def update_results(request, tournament_id):
                         pair.player2 = None
                         pair.result = '2-0'
                         pair.was_bye = True
-                        player1.match_points += 3  # Bye counts as a win
+                        player1.match_points += 3
                         player1.wins += 1
                         player1.had_bye = True
-                        player1.games_won += 2  # Player1 wins both games
+                        player1.games_won += 2
                         player1.games_lost += 0
                         player1.calculate_gwp()
                         print(f"Player {player1.name} had a Bye. Match points: {player1.match_points}, Wins: {player1.wins}")
@@ -190,7 +189,6 @@ def update_results(request, tournament_id):
                         print(f"Processing pair {i} in round {round_number}")
                         print(f"Player 1 ID: {player1_id}, Player 2 ID: {player2_id}, Score1: {new_score1}, Score2: {new_score2}")
 
-                        # Update the scores and results
                         if new_score1 == new_score2:
                             pair.player1_score = new_score1
                             pair.player2_score = new_score2
@@ -198,11 +196,13 @@ def update_results(request, tournament_id):
                             pair.results_submitted = True
                             player1.match_points += 1
                             player1.draws += 1
-                            player1.games_drawn += 2  # Both players drew 2 games
+                            player1.games_won += new_score1
+                            player1.games_lost += new_score2
                             if player2:
                                 player2.match_points += 1
                                 player2.draws += 1
-                                player2.games_drawn += 2
+                                player2.games_won += new_score2
+                                player2.games_lost += new_score1
                             player1.calculate_gwp()
                             if player2:
                                 player2.calculate_gwp()
@@ -241,42 +241,22 @@ def update_results(request, tournament_id):
                             if player2:
                                 player2.calculate_gwp()
 
-                    # Save the updated pair and players
                     pair.save()
                     player1.save()
                     if player2:
                         player2.save()
 
-        # Recalculate leaderboard (sort by match points, wins, draws, etc.)
-        players = Player.objects.filter(tournament=tournament).order_by('-match_points', '-wins', '-draws', '-had_bye')
+        # Calculate OMP for each player after all pairings have been processed
+        players = Player.objects.filter(tournament=tournament)
+        for player in players:
+            player.calculate_omp()
 
-        # Debugging: Show updated leaderboard
+        # Show updated leaderboard
         print("Updated leaderboard:")
         for player in players:
-            print(f"Player {player.name}: Match points: {player.match_points}, Wins: {player.wins}, Draws: {player.draws}, GWP: {player.game_win_percentage:.2f}%, Had bye: {player.had_bye}")
+            print(f"Player {player.name}: Match points: {player.match_points}, Wins: {player.wins}, Draws: {player.draws}, GWP: {player.game_win_percentage:.2f}%, OMP: {player.opponents_match_win_percentage:.2f}%, Had bye: {player.had_bye}")
 
         return redirect('tournament_players', id=tournament_id)
-
-# def update_win_percentages(tournament):
-#     players = Player.objects.filter(tournament=tournament)
-#     for player in players:
-#         total_matches = Pairing.objects.filter(models.Q(player1=player) | models.Q(player2=player)).count()
-#         total_games = total_matches * 2  # Assuming 2 games per match
-#         if total_matches > 0:
-#             player.match_win_percentage = max((player.match_points / (total_matches * 3)) * 100, 33.0)
-#             player.game_win_percentage = max((player.game_points / (total_games * 3)) * 100, 33.0)
-#             player.save()
-#
-#     for player in players:
-#         opponents = Pairing.objects.filter(models.Q(player1=player) | models.Q(player2=player)).values_list('player1', 'player2')
-#         opponents = [opponent for sublist in opponents for opponent in sublist if opponent != player.id]
-#         if opponents:
-#             opponents_match_win_percentage = sum(Player.objects.filter(id__in=opponents).values_list('match_win_percentage', flat=True)) / len(opponents)
-#             opponents_game_win_percentage = sum(Player.objects.filter(id__in=opponents).values_list('game_win_percentage', flat=True)) / len(opponents)
-#             player.opponents_match_win_percentage = opponents_match_win_percentage
-#             player.opponents_game_win_percentage = opponents_game_win_percentage
-#             player.save()
-
 
 def randomize_pairings(request, tournament_id):
     tournament = get_object_or_404(Tournament, id=tournament_id)
