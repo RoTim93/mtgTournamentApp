@@ -246,15 +246,16 @@ def update_results(request, tournament_id):
                     if player2:
                         player2.save()
 
-        # Calculate OMP for each player after all pairings have been processed
+        # Calculate OMP and OGP for each player after all pairings have been processed
         players = Player.objects.filter(tournament=tournament)
         for player in players:
             player.calculate_omp()
+            player.calculate_ogp()
 
         # Show updated leaderboard
         print("Updated leaderboard:")
         for player in players:
-            print(f"Player {player.name}: Match points: {player.match_points}, Wins: {player.wins}, Draws: {player.draws}, GWP: {player.game_win_percentage:.2f}%, OMP: {player.opponents_match_win_percentage:.2f}%, Had bye: {player.had_bye}")
+            print(f"Player {player.name}: Match points: {player.match_points}, Wins: {player.wins}, Draws: {player.draws}, GWP: {player.game_win_percentage:.2f}%, OMP: {player.opponents_match_win_percentage:.2f}%, OGP: {player.opponents_game_win_percentage:.2f}%, Had bye: {player.had_bye}")
 
         return redirect('tournament_players', id=tournament_id)
 
